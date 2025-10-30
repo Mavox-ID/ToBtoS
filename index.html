@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YICB - Your Ideal Crypto Business</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+
+    <!-- Favicon и SEO -->
+    <link rel="icon" href="logo.png" sizes="512x512" type="image/png">
+    <meta name="description" content="YICB - Your Ideal Crypto Business">
+    <meta name="keywords" content="PWA, YICB, UmbrioX, Your, Ideal, Crypto, Business">
+    <meta name="author" content="Mavox-ID">
+    <meta property="og:title" content="YICB - Your Ideal Crypto Business">
+    <meta property="og:description" content="Online Crypto game">
+    <meta property="og:image" content="logo.png">
+    <meta property="og:type" content="website">
+    
     <style>
         * {
             margin: 0;
@@ -67,6 +82,12 @@
             color: #ffd700;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
             margin: 15px 0;
+        }
+
+        .balance-display::after {
+        content: "★";
+        color: gold;
+        margin-left: 4px;
         }
 
         .promo-section {

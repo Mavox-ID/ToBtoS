@@ -1,0 +1,16 @@
+{
+  "name": "YICB",
+  "short_name": "Bioglass",
+  "description": "Your Idealy Crypto Business",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}

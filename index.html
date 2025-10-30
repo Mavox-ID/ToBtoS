@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>YICB - Your Ideal Crypto Business</title>
 
     <!-- PWA Manifest -->
@@ -592,6 +592,79 @@
         @keyframes jackpotPulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
+        }
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: center;
+    flex-direction: column;
+}
+
+.container {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    .subtitle {
+        font-size: 1em;
+    }
+
+    .game-card {
+        padding: 20px;
+    }
+
+    .balance-display {
+        font-size: 1.8em;
+    }
+
+    .promo-input {
+        font-size: 1em;
+        padding: 12px;
+    }
+
+    .btn {
+        font-size: 1em;
+        padding: 12px;
+    }
+
+    .slot {
+        width: 70px;
+        height: 70px;
+        font-size: 2em;
+    }
+
+    .roulette-display {
+        width: 180px;
+        height: 180px;
+        font-size: 3em;
+    }
+
+    .dice-display {
+        width: 120px;
+        height: 120px;
+        font-size: 4em;
+    }
+
+    .game-title {
+        font-size: 1.4em;
+    }
+
+    .game-description {
+        font-size: 0.9em;
+    }
+}
+
+html, body {
+    overflow-x: hidden;
         }
     </style>
 </head>

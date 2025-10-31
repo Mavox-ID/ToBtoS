@@ -693,7 +693,8 @@ html, body {
             <div class="active-promos">
                 <h4>Available for everyone:</h4>
                 <div class="promo-list">
-                    <div class="promo-tag" id="startPromo">Start - 500 coins</div>
+                <div class="promo-tag" id="startPromo">Start - 500 coins</div>
+                <div class="promo-tag" id="dailyPromo">Daily - 100 coins</div>
                 </div>
             </div>
             <div class="active-promos" id="usedPromosSection" style="display: none;">
@@ -707,7 +708,7 @@ html, body {
             <div class="stats-grid">
                 <div class="stat-item">
                     <div class="stat-label">Total Games</div>
-                    <div class="stat-value" id="totalGames">0</div>
+                    <div class="stat-value"id="totalGames">0</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Games Won</div>
@@ -852,6 +853,22 @@ html, body {
             'UmbrioX': { coins: 1000, description: 'Cryptocurrency of the future' }
         };
 
+// ============================================
+// DAILY PROMO SYSTEM
+// ============================================
+
+function canUseDaily() {
+    const lastUsed = getCookie('daily_last_used');
+    if (!lastUsed) return true;
+    const lastDate = new Date(lastUsed);
+    const now = new Date();
+    return lastDate.toDateString() !== now.toDateString()
+}
+
+function markDailyUsed() {
+    setCookie('daily_last_used', new Date().toISOString(), 7);
+}
+
         // ============================================
         // GAME STATE AND DATA
         // ============================================
@@ -964,29 +981,36 @@ html, body {
         // PROMO CODE SYSTEM
         // ============================================
         function updatePromoList() {
-            const promoList = document.getElementById('promoList');
-            const usedPromosSection = document.getElementById('usedPromosSection');
-            const startPromo = document.getElementById('startPromo');
-            
-            // Update Start promo status
-            if (usedPromos.includes('Start')) {
-                startPromo.classList.add('used-promo');
-                startPromo.textContent = 'Start - 500 coins (Used)';
-            } else {
-                startPromo.classList.remove('used-promo');
-                startPromo.textContent = 'Start - 500 coins';
-            }
-            
-            // Show only activated promo codes
-            if (usedPromos.length > 0) {
-                usedPromosSection.style.display = 'block';
-                promoList.innerHTML = usedPromos.map(code => {
-                    const promo = PROMO_CODES[code];
-                    return `<div class="promo-tag used-promo">${code} - ${promo.coins} coins (Activated)</div>`;
-                }).join('');
-            } else {
-                usedPromosSection.style.display = 'none';
-            }
+    const promoList = document.getElementById('promoList');
+    const usedPromosSection = document.getElementById('usedPromosSection');
+    const startPromo = document.getElementById('startPromo');
+    const dailyPromo = document.getElementById('dailyPromo');
+    
+    if (usedPromos.includes('Start')) {
+        startPromo.classList.add('used-promo');
+        startPromo.textContent = 'Start - 500 coins (Used)';
+    } else {
+        startPromo.classList.remove('used-promo');
+        startPromo.textContent = 'Start - 500 coins';
+    }
+
+    if (!canUseDaily()) {
+        dailyPromo.classList.add('used-promo');
+        dailyPromo.textContent = 'Daily - 100 coins (Come back tomorrow)';
+    } else {
+        dailyPromo.classList.remove('used-promo');
+        dailyPromo.textContent = 'Daily - 100 coins';
+    }
+
+    if (usedPromos.length > 0) {
+        usedPromosSection.style.display = 'block';
+        promoList.innerHTML = usedPromos.map(code => {
+            const promo = PROMO_CODES[code];
+            return `<div class="promo-tag used-promo">${code} - ${promo.coins} coins (Activated)</div>`;
+        }).join('');
+    } else {
+        usedPromosSection.style.display = 'none';
+    }
         }
 
         function activatePromo() {
@@ -1008,6 +1032,16 @@ html, body {
                 showMessage('promoMessage', 'This promo code has already been used!', 'error');
                 input.value = '';
                 return;
+            }
+
+            if (code === 'Daily') {
+    if (!canUseDaily()) {
+        showMessage('promoMessage', 'Daily can only be activated once a day!', 'error');
+        input.value = '';
+        return;
+    } else {
+        markDailyUsed();
+    }
             }
 
             const coins = PROMO_CODES[code].coins;
@@ -1511,7 +1545,6 @@ html, body {
             document.getElementById('boxCost').textContent = this.value || '100';
         });
 
-        // Allow Enter key for promo activation
         document.getElementById('promoInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') activatePromo();
         });

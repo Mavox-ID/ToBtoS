@@ -1347,17 +1347,19 @@ function updateMinesDisplay() {
 }
 
 function calculateMinesMultiplier() {
-    if (gemsRevealed === 0) return 1;
+    if (gemsRevealed === 0) return 0.5;
+    if (gemsRevealed === 1) return 0.75;
+    if (gemsRevealed === 2) return 1.0;
     
     const safeSpots = 25 - totalMines;
     const baseMultiplier = 1 + (totalMines / 25);
-    const progressMultiplier = Math.pow(baseMultiplier, gemsRevealed);
+    const progressMultiplier = Math.pow(baseMultiplier, gemsRevealed - 2); // Вычитаем 2, чтобы начать с 1x
     
     return Math.min(progressMultiplier, 100);
 }
-
+        
 function cashOutMines() {
-    if (!minesActive || gemsRevealed === 0) return;
+    if (!minesActive) return;
     endMinesGame(true);
 }
 

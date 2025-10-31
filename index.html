@@ -909,14 +909,6 @@ html, body {
             <div class="stat-label">Biggest Win</div>
             <div class="stat-value" id="biggestWin">0</div>
         </div>
-        <div class="stat-item">
-            <div class="stat-label">Biggest Loss</div>
-            <div class="stat-value" id="biggestLoss">0</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-label">Peak Balance</div>
-            <div class="stat-value" id="peakBalance">0</div>
-        </div>
     </div>
         </div>
 
@@ -1048,7 +1040,7 @@ html, body {
 
         <footer class="footer">
             <p>YICB - Your Ideal Crypto Business™ | B-HD® 2025 for ©</p>
-            <p>Version 344.20</p>
+            <p>Version 344.21</p>
         </footer>
     </div>
     
@@ -1085,9 +1077,7 @@ function markDailyUsed() {
         let stats = {
         totalGames: 0,
         gamesWon: 0,
-        biggestWin: 0,
-        biggestLoss: 0,
-        peakBalance: 0
+        biggestWin: 0
         };
         let usedPromos = [];
         let history = [];
@@ -1129,9 +1119,7 @@ function markDailyUsed() {
             stats = getCookie('yicb_stats') || { 
             totalGames: 0, 
             gamesWon: 0, 
-            biggestWin: 0, 
-            biggestLoss: 0, 
-            peakBalance: 0
+            biggestWin: 0
             };
             usedPromos = getCookie('yicb_promos') || [];
             history = getCookie('yicb_history') || [];
@@ -1274,21 +1262,23 @@ function markDailyUsed() {
         }
     }
 
-    if (usedPromos.includes(code)) {
-    showMessage('promoMessage', 'This promo code has already been used!', 'error');
-    input.value = '';
-    return;
-}
-
-usedPromos.push(code);
-balance += PROMO_CODES[code].coins;
-showMessage('promoMessage', `✅ Promo code activated! +${PROMO_CODES[code].coins} coins!`, 'success');
-input.value = '';
-
-    updateDisplay();
-    updatePromoList();
-    saveGame();
-         }
+    if (usedPromos.includes(code)) {  
+        showMessage('promoMessage', 'This promo code has already been used!', 'error');  
+        input.value = '';  
+        return;  
+    }  
+  
+    const coins = PROMO_CODES[code].coins;  
+    balance += coins;  
+    usedPromos.push(code);  
+  
+    showMessage('promoMessage', `✅ Promo code activated! +${coins} coins!`, 'success');  
+    input.value = '';  
+  
+    updateDisplay();  
+    updatePromoList();  
+    saveGame();  
+         }  
 
 // ========================================
 // MINES GAME
@@ -1434,11 +1424,6 @@ function endMinesGame(cashedOut) {
         addToHistory('Mines', minesBet, profit, multiplier.toFixed(2));
     } else {
         winStreak = 0;
-
-        if (minesBet > stats.biggestLoss) {
-        stats.biggestLoss = minesBet;
-        }
-        
         showMessage('minesMessage', `💥 Hit a bomb! Lost ${minesBet.toFixed(2)} coins.`, 'error');
         addToHistory('Mines', minesBet, -minesBet, '0');
     }
@@ -1517,11 +1502,6 @@ function endMinesGame(cashedOut) {
                 addToHistory('Slots', bet, profit, '0.5');
             } else {
                 winStreak = 0;
-
-                if (bet > stats.biggestLoss) {
-                stats.biggestLoss = bet;
-                }
-                
                 showMessage('slotsMessage', `No match! Lost ${bet.toFixed(2)} coins.`, 'error');
                 addToHistory('Slots', bet, -bet, '0');
             }
@@ -1587,11 +1567,6 @@ function endMinesGame(cashedOut) {
                 addToHistory('Roulette', bet, profit, multiplier);
             } else {
                 winStreak = 0;
-
-                if (bet > stats.biggestLoss) {
-                stats.biggestLoss = bet;
-                }
-                
                 showMessage('rouletteMessage', `Lost! Result was ${result}. -${bet.toFixed(2)} coins.`, 'error');
                 addToHistory('Roulette', bet, -bet, '0');
             }
@@ -1662,11 +1637,6 @@ function endMinesGame(cashedOut) {
                 addToHistory('Dice', bet, profit, multiplier.toFixed(2));
             } else {
                 winStreak = 0;
-
-                if (bet > stats.biggestLoss) {
-                stats.biggestLoss = bet;
-                }
-                
                 showMessage('diceMessage', `🎲 Rolled ${roll}. Need > ${target}. Lost ${bet.toFixed(2)} coins.`, 'error');
                 addToHistory('Dice', bet, -bet, '0');
             }
@@ -1747,11 +1717,6 @@ function endMinesGame(cashedOut) {
                 addToHistory('Mystery Box', bet, profit, multiplier.toFixed(2));
             } else {
                 winStreak = 0;
-
-                if (bet > stats.biggestLoss) {
-                stats.biggestLoss = bet;
-                }
-                
                 showMessage('boxMessage', `Got ${multiplier.toFixed(2)}x. Lost ${(-profit).toFixed(2)} coins.`, 'error');
                 addToHistory('Mystery Box', bet, profit, multiplier.toFixed(2));
             }
@@ -1812,11 +1777,6 @@ function endMinesGame(cashedOut) {
                 }
             } else {
                 winStreak = 0;
-
-                if (towerBetAmount > stats.biggestLoss) {
-                stats.biggestLoss = towerBetAmount;
-                }
-                
                 stats.totalGames++;
                 showMessage('towerMessage', `💥 Fell from level ${towerLevel}! Lost ${towerBetAmount.toFixed(2)} coins!`, 'error');
                 addToHistory('Tower', towerBetAmount, -towerBetAmount, '0');

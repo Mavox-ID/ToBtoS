@@ -912,6 +912,34 @@ html, body {
     </div>
 
     <script>
+// =============================
+// COOKIE AUTO-FIX SYSTEM
+// =============================
+(function fixCorruptedCookies() {
+  const cookieNames = ['yicb_balance', 'yicb_stats', 'yicb_promos', 'yicb_history'];
+  let fixed = false;
+
+  for (const name of cookieNames) {
+    const value = document.cookie.split('; ').find(row => row.startsWith(name + '='));
+    if (!value) continue;
+    const decoded = decodeURIComponent(value.split('=')[1]);
+
+    if (decoded === 'undefined' || decoded === 'null' || decoded === '' || decoded === 'NaN') {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+      fixed = true;
+    } else {
+      try {
+        JSON.parse(decoded);
+      } catch {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+        fixed = true;
+      }
+    }
+  }
+
+  if (fixed) console.log('💾 Cookies were fixed automatically!');
+})();
+        
         // ============================================
         // PROMO CODES CONFIGURATION
         // ============================================

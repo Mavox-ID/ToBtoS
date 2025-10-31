@@ -907,13 +907,12 @@ html, body {
 
         <footer class="footer">
             <p>YICB - Your Ideal Crypto Business™ | B-HD® 2025 for ©</p>
-            <p>Version 344.18.fix</p>
+            <p>Version 344.18.autoCfix</p>
         </footer>
     </div>
 
 <script>
-// === COOKIE AUTO-FIX (one-time repair) ===
-(function fixBrokenCookies() {
+window.onload = function() {
   const cookies = ['yicb_balance', 'yicb_stats', 'yicb_promos', 'yicb_history'];
   let broken = false;
 
@@ -934,7 +933,7 @@ html, body {
   if (broken) {
     alert('🧩 D.1.');
   }
-})();
+};
 </script>
     
     <script>

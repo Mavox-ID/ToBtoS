@@ -666,6 +666,66 @@ body {
 html, body {
     overflow-x: hidden;
         }
+
+        .telegram-section {
+    background: linear-gradient(135deg, #0088cc 0%, #00c6ff 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 25px 0;
+    text-align: left;
+    box-shadow: 0 10px 30px rgba(0, 136, 204, 0.3);
+    transition: all 0.3s ease;
+}
+
+.telegram-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0, 136, 204, 0.5);
+}
+
+.telegram-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    gap: 15px;
+}
+
+.telegram-icon {
+    width: 60px;
+    height: 60px;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+}
+
+.telegram-text h3 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.telegram-text p {
+    margin: 5px 0 0;
+    font-size: 1em;
+    opacity: 0.9;
+}
+
+@media (max-width: 600px) {
+    .telegram-link {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .telegram-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .telegram-text h3 {
+        font-size: 1.2em;
+    }
+
+    .telegram-text p {
+        font-size: 0.9em;
+    }
+}
     </style>
 </head>
 <body>
@@ -700,6 +760,15 @@ html, body {
             <div class="active-promos" id="usedPromosSection" style="display: none;">
                 <h4>Your activated promo codes:</h4>
                 <div class="promo-list" id="promoList"></div>
+            </div>
+            <div class="telegram-section">
+    <a href="https://t.me/yicb_official" target="_blank" class="telegram-link">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" class="telegram-icon">
+        <div class="telegram-text">
+            <h3>Our Telegram channel</h3>
+            <p>News, bonuses, and 🔥 exclusive promo codes only there!</p>
+        </div>
+    </a>
             </div>
         </div>
 
@@ -837,8 +906,8 @@ html, body {
         </div>
 
         <footer class="footer">
-            <p>YICB - Your Ideal Crypto Business © 2025</p>
-            <p>Version 340.10</p>
+            <p>YICB - Your Ideal Crypto Business™ | B-HD® 2025 for ©</p>
+            <p>Version 344.15</p>
         </footer>
     </div>
 

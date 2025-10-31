@@ -1216,13 +1216,16 @@ function markDailyUsed() {
     }
 
     // Used promo l.1*v3
-    const displayPromos = usedPromos.filter(code => code !== 'Daily');
+    const displayPromos = usedPromos.filter(code => code !== 'Daily' && code !== 'Start');
     if (displayPromos.length > 0) {
         usedPromosSection.style.display = 'block';
         promoList.innerHTML = displayPromos.map(code => {
-            const promo = PROMO_CODES[code];
-            return `<div class="promo-tag used-promo">${code} - ${promo.coins} coins (Activated)</div>`;
-        }).join('');
+    const promo = PROMO_CODES[code];
+    if (promo) {
+        return `<div class="promo-tag used-promo">${code} - ${promo.coins} coins (Activated)</div>`;
+    }
+    return '';
+}).filter(html => html).join('');
     } else {
         usedPromosSection.style.display = 'none';
     }

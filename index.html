@@ -1126,7 +1126,13 @@ function markDailyUsed() {
 
         function loadGame() {
             balance = getCookie('yicb_balance') || 0;
-            stats = getCookie('yicb_stats') || { totalGames: 0, gamesWon: 0, biggestWin: 0 };
+            stats = getCookie('yicb_stats') || { 
+            totalGames: 0, 
+            gamesWon: 0, 
+            biggestWin: 0, 
+            biggestLoss: 0, 
+            peakBalance: 0
+            };
             usedPromos = getCookie('yicb_promos') || [];
             history = getCookie('yicb_history') || [];
             updateDisplay();
@@ -1269,17 +1275,15 @@ function markDailyUsed() {
     }
 
     if (usedPromos.includes(code)) {
-        showMessage('promoMessage', 'This promo code has already been used!', 'error');
-        input.value = '';
-        return;
-    }
-
-    const coins = PROMO_CODES[code].coins;
-    balance += coins;
-    usedPromos.push(code);
-
-    showMessage('promoMessage', `✅ Promo code activated! +${coins} coins!`, 'success');
+    showMessage('promoMessage', 'This promo code has already been used!', 'error');
     input.value = '';
+    return;
+}
+
+usedPromos.push(code);
+balance += PROMO_CODES[code].coins;
+showMessage('promoMessage', `✅ Promo code activated! +${PROMO_CODES[code].coins} coins!`, 'success');
+input.value = '';
 
     updateDisplay();
     updatePromoList();
@@ -1432,7 +1436,7 @@ function endMinesGame(cashedOut) {
         winStreak = 0;
 
         if (minesBet > stats.biggestLoss) {
-        stats.biggestLoss = bet;
+        stats.biggestLoss = minesBet;
         }
         
         showMessage('minesMessage', `💥 Hit a bomb! Lost ${minesBet.toFixed(2)} coins.`, 'error');
@@ -1810,7 +1814,7 @@ function endMinesGame(cashedOut) {
                 winStreak = 0;
 
                 if (towerBetAmount > stats.biggestLoss) {
-                stats.biggestLoss = bet;
+                stats.biggestLoss = towerBetAmount;
                 }
                 
                 stats.totalGames++;

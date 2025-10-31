@@ -907,7 +907,7 @@ html, body {
 
         <footer class="footer">
             <p>YICB - Your Ideal Crypto Business™ | B-HD® 2025 for ©</p>
-            <p>Version 344.16</p>
+            <p>Version 344.17</p>
         </footer>
     </div>
 
@@ -917,7 +917,7 @@ html, body {
         // ============================================
         const PROMO_CODES = {
             'Start': { coins: 500, description: 'Welcome Bonus' },
-            'Daily': { coins: 100, description: 'One of the creators' },
+            'Daily': { coins: 100, description: 'Daily bonus' },
             'Xwin': { coins: 100, description: 'Promo 03.11' },
         };
 
@@ -1053,7 +1053,8 @@ function markDailyUsed() {
     const usedPromosSection = document.getElementById('usedPromosSection');
     const startPromo = document.getElementById('startPromo');
     const dailyPromo = document.getElementById('dailyPromo');
-    
+
+    // Start
     if (usedPromos.includes('Start')) {
         startPromo.classList.add('used-promo');
         startPromo.textContent = 'Start - 500 coins (Used)';
@@ -1062,6 +1063,7 @@ function markDailyUsed() {
         startPromo.textContent = 'Start - 500 coins';
     }
 
+    // Daily
     if (!canUseDaily()) {
         dailyPromo.classList.add('used-promo');
         dailyPromo.textContent = 'Daily - 100 coins (Come back tomorrow)';
@@ -1070,9 +1072,11 @@ function markDailyUsed() {
         dailyPromo.textContent = 'Daily - 100 coins';
     }
 
-    if (usedPromos.length > 0) {
+    // Used promo l.1*v3
+    const displayPromos = usedPromos.filter(code => code !== 'Daily');
+    if (displayPromos.length > 0) {
         usedPromosSection.style.display = 'block';
-        promoList.innerHTML = usedPromos.map(code => {
+        promoList.innerHTML = displayPromos.map(code => {
             const promo = PROMO_CODES[code];
             return `<div class="promo-tag used-promo">${code} - ${promo.coins} coins (Activated)</div>`;
         }).join('');
@@ -1081,48 +1085,58 @@ function markDailyUsed() {
     }
         }
 
-        function activatePromo() {
-            const input = document.getElementById('promoInput');
-            const code = input.value.trim();
-            
-            if (!code) {
-                showMessage('promoMessage', 'Please enter a promo code!', 'error');
-                return;
-            }
+         function activatePromo() {
+    const input = document.getElementById('promoInput');
+    const code = input.value.trim();
 
-            if (!PROMO_CODES[code]) {
-                showMessage('promoMessage', 'Invalid promo code!', 'error');
-                input.value = '';
-                return;
-            }
+    if (!code) {
+        showMessage('promoMessage', 'Please enter a promo code!', 'error');
+        return;
+    }
 
-            if (usedPromos.includes(code)) {
-                showMessage('promoMessage', 'This promo code has already been used!', 'error');
-                input.value = '';
-                return;
-            }
-
-            if (code === 'Daily') {
-    if (!canUseDaily()) {
-        showMessage('promoMessage', 'Daily can only be activated once a day!', 'error');
+    if (!PROMO_CODES[code]) {
+        showMessage('promoMessage', 'Invalid promo code!', 'error');
         input.value = '';
         return;
-    } else {
-        markDailyUsed();
     }
-            }
 
-            const coins = PROMO_CODES[code].coins;
-            balance += coins;
-            usedPromos.push(code);
-            
-            showMessage('promoMessage', `✅ Promo code activated! +${coins} coins!`, 'success');
+    // Daily
+    if (code === 'Daily') {
+        if (!canUseDaily()) {
+            showMessage('promoMessage', 'Daily can only be activated once a day!', 'error');
             input.value = '';
-            
+            return;
+        } else {
+            markDailyUsed();
+            const coins = PROMO_CODES['Daily'].coins;
+            balance += coins;
+            showMessage('promoMessage', `✅ Daily bonus activated! +${coins} coins!`, 'success');
             updateDisplay();
             updatePromoList();
             saveGame();
+            input.value = '';
+            return;
         }
+    }
+
+    if (usedPromos.includes(code)) {
+        showMessage('promoMessage', 'This promo code has already been used!', 'error');
+        input.value = '';
+        return;
+    }
+
+    const coins = PROMO_CODES[code].coins;
+    balance += coins;
+    usedPromos.push(code);
+
+    showMessage('promoMessage', `✅ Promo code activated! +${coins} coins!`, 'success');
+    input.value = '';
+
+    updateDisplay();
+    updatePromoList();
+    saveGame();
+         }
+    
 
         // ============================================
         // CRASH GAME (ROCKET)

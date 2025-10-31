@@ -1665,38 +1665,5 @@ function crashGame(cashedOut, bet) {
             updateDiceTarget();
         };
     </script>
-    <script>
-(function() {
-  const DELETE_DATE = new Date('2025-10-31T17:10:00'); 
-  const STORAGE_KEY = 'lastPurgeCheck'; 
-
-  const now = new Date();
-  const lastPurge = localStorage.getItem(STORAGE_KEY);
-  const alreadyPurged = localStorage.getItem('dataPurged') === 'true';
-
-  if (now >= DELETE_DATE && !alreadyPurged) {
-    console.log('%c🚀 V3*5-&3', 'color:red;font-weight:bold;');
-
-    document.cookie.split(";").forEach(c => {
-      const name = c.split("=")[0].trim();
-      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
-    });
-
-    try {
-      localStorage.clear();
-      sessionStorage.clear();
-    } catch (e) {}
-
-    
-    if ('caches' in window) {
-      caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
-    }
-
-    localStorage.setItem('dataPurged', 'true');
-  }
-
-  localStorage.setItem(STORAGE_KEY, now.toISOString());
-})();
-    </script>
 </body>
 </html>

@@ -552,22 +552,28 @@
         }
 
         .progress-bar {
-            width: 100%;
-            height: 30px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            overflow: hidden;
-            margin: 15px 0;
+         width: 100%;
+         height: 30px;
+         background: rgba(0, 0, 0, 0.3);
+         border-radius: 15px;
+         overflow: visible;
+         margin: 15px 0;
+         position: relative;
         }
 
         .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
-            transition: width 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+        height: 100%;
+        background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+        transition: width 0.3s ease;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        font-weight: bold;
+        border-radius: 15px;
+        white-space: nowrap;
+        min-width: 80px;
+        position: relative;
+        overflow: visible;
         }
 
         .combo-display {
@@ -1024,7 +1030,7 @@ html, body {
 
         <footer class="footer">
             <p>YICB - Your Ideal Crypto Business™ | B-HD® 2025 for ©</p>
-            <p>Version 344.21</p>
+            <p>Version 344.22.beta</p>
         </footer>
     </div>
     

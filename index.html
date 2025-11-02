@@ -1081,6 +1081,7 @@ function markDailyUsed() {
         let towerActive = false;
         let towerLevel = 0;
         let towerBetAmount = 0;
+        let boxAttempts = 0;
 
         // ============================================
         // COOKIE MANAGEMENT
@@ -1624,8 +1625,6 @@ function endMinesGame(cashedOut) {
 // ============================================
 // MYSTERY BOX GAME
 // ============================================
-let boxAttempts = 0;
-
 function openBox() {
     const bet = 1000;
     
@@ -1664,9 +1663,7 @@ function openBox() {
                 multiplier = 1.1 + Math.random() * 0.4;
                 emoji = '🎁';
             }
-        } 
-
-        else {
+        } else {
             const rand = Math.random();
             
             if (rand < 0.50) {
@@ -1690,13 +1687,13 @@ function openBox() {
         multiplier = Math.min(multiplier, 2.0);
         
         reveal.textContent = emoji;
-        checkBox(multiplier, bet, boxAttempts);
+        checkBox(multiplier, bet);
     }, 1500);
 
     saveGame();
 }
 
-function checkBox(multiplier, bet, attempts) {
+function checkBox(multiplier, bet) {
     stats.totalGames++;
     const winAmount = bet * multiplier;
     balance += winAmount;
@@ -1710,11 +1707,11 @@ function checkBox(multiplier, bet, attempts) {
             stats.biggestWin = profit;
         }
         
-        showMessage('boxMessage', `🎁 Amazing! ${multiplier.toFixed(2)}x multiplier! Won ${profit.toFixed(2)} coins! (Attempt #${attempts})`, 'success');
+        showMessage('boxMessage', `🎁 ${multiplier.toFixed(2)}x! Won ${profit.toFixed(2)} coins!`, 'success');
         addToHistory('Mystery Box', bet, profit, multiplier.toFixed(2));
     } else {
         winStreak = 0;
-        showMessage('boxMessage', `Got ${multiplier.toFixed(2)}x. Lost ${(-profit).toFixed(2)} coins. (Attempt #${attempts})`, 'error');
+        showMessage('boxMessage', `${multiplier.toFixed(2)}x. Lost ${(-profit).toFixed(2)} coins.`, 'error');
         addToHistory('Mystery Box', bet, profit, multiplier.toFixed(2));
     }
 

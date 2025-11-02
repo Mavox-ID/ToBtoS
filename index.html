@@ -989,6 +989,20 @@ html, body {
                 <div id="diceMessage"></div>
             </div>
 
+<!-- Mystery Box -->
+<div class="game-card">
+    <h3 class="game-title">🎁 Mystery Box</h3>
+    <p class="game-description">Open a mystery box! Bet exactly 1000 coins. Max multiplier: 2x!</p>
+    <div class="bet-section">
+        <input type="number" id="boxBet" class="bet-input" placeholder="Enter 1000 coins" min="1000" max="1000" value="1000">
+    </div>
+    <div class="mystery-box" id="mysteryBox">
+        <div class="prize-reveal" id="prizeReveal">?</div>
+    </div>
+    <button onclick="openBox()" class="btn btn-primary" style="width: 100%;">Open Box (Cost: 1000 coins)</button>
+    <div id="boxMessage"></div>
+</div>
+
             <!-- Tower Game -->
             <div class="game-card">
                 <h3 class="game-title">🏰 Tower Climb</h3>
@@ -1610,6 +1624,112 @@ function endMinesGame(cashedOut) {
             saveGame();
         }
 
+// ============================================
+// MYSTERY BOX GAME
+// ============================================
+let boxAttempts = 0;
+
+function openBox() {
+    const bet = parseFloat(document.getElementById('boxBet').value);
+    
+    if (isNaN(bet) || bet !== 1000) {
+        showMessage('boxMessage', 'Bet must be exactly 1000 coins!', 'error');
+        return;
+    }
+    
+    if (bet > balance) {
+        showMessage('boxMessage', 'Insufficient balance!', 'error');
+        return;
+    }
+
+    balance -= bet;
+    updateDisplay();
+
+    const box = document.getElementById('mysteryBox');
+    const reveal = document.getElementById('prizeReveal');
+    
+    box.classList.add('box-animation');
+    reveal.textContent = '?';
+    
+    setTimeout(() => {
+        box.classList.remove('box-animation');
+        
+        boxAttempts++;
+        
+        let multiplier;
+        let emoji;
+        
+        if (boxAttempts < 30) {
+            const rand = Math.random();
+            
+            if (rand < 0.85) {
+                multiplier = 0.1 + Math.random() * 0.85;
+                emoji = '💔';
+            } else if (rand < 0.95) {
+                multiplier = 0.95 + Math.random() * 0.15;
+                emoji = '✨';
+            } else {
+                multiplier = 1.1 + Math.random() * 0.4;
+                emoji = '🎁';
+            }
+        } 
+
+        else {
+            const rand = Math.random();
+            
+            if (rand < 0.50) {
+                multiplier = 0.3 + Math.random() * 0.65;
+                emoji = '💔';
+            } else if (rand < 0.75) {
+                multiplier = 0.95 + Math.random() * 0.55;
+                emoji = '✨';
+            } else if (rand < 0.92) {
+                multiplier = 1.5 + Math.random() * 0.5;
+                emoji = '🎁';
+            } else if (rand < 0.98) {
+                multiplier = 1.8 + Math.random() * 0.2;
+                emoji = '💎';
+            } else {
+                multiplier = 2.0;
+                emoji = '👑';
+            }
+        }
+        
+        multiplier = Math.min(multiplier, 2.0);
+        
+        reveal.textContent = emoji;
+        checkBox(multiplier, bet, boxAttempts);
+    }, 1500);
+
+    saveGame();
+}
+
+function checkBox(multiplier, bet, attempts) {
+    stats.totalGames++;
+    const winAmount = bet * multiplier;
+    balance += winAmount;
+    const profit = winAmount - bet;
+    
+    if (multiplier >= 1) {
+        stats.gamesWon++;
+        winStreak++;
+        
+        if (profit > stats.biggestWin) {
+            stats.biggestWin = profit;
+        }
+        
+        showMessage('boxMessage', `🎁 Amazing! ${multiplier.toFixed(2)}x multiplier! Won ${profit.toFixed(2)} coins! (Attempt #${attempts})`, 'success');
+        addToHistory('Mystery Box', bet, profit, multiplier.toFixed(2));
+    } else {
+        winStreak = 0;
+        showMessage('boxMessage', `Got ${multiplier.toFixed(2)}x. Lost ${(-profit).toFixed(2)} coins. (Attempt #${attempts})`, 'error');
+        addToHistory('Mystery Box', bet, profit, multiplier.toFixed(2));
+    }
+
+    updateDisplay();
+    saveGame();
+}
+        
         // ============================================
         // TOWER CLIMB GAME
         // ============================================

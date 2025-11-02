@@ -989,17 +989,6 @@ html, body {
                 <div id="diceMessage"></div>
             </div>
 
-<!-- Mystery Box -->
-<div class="game-card">
-    <h3 class="game-title">🎁 Mystery Box</h3>
-    <p class="game-description">Open a mystery box! Cost: 1000 coins. Max multiplier: 2x!</p>
-    <div class="mystery-box" id="mysteryBox">
-        <div class="prize-reveal" id="prizeReveal">?</div>
-    </div>
-    <button onclick="openBox()" class="btn btn-primary" style="width: 100%;">Open Box (Cost: 1000 coins)</button>
-    <div id="boxMessage"></div>
-</div>
-
             <!-- Tower Game -->
             <div class="game-card">
                 <h3 class="game-title">🏰 Tower Climb</h3>
@@ -1621,81 +1610,85 @@ function endMinesGame(cashedOut) {
             saveGame();
         }
 
-// ============================================
-// MYSTERY BOX GAME
-// ============================================
-function openBox() {
-    const bet = 1000;
-    
-    if (bet > balance) {
-        showMessage('boxMessage', 'Insufficient balance! Need 1000 coins!', 'error');
-        return;
-    }
+        // ============================================
+        // MYSTERY BOX GAME
+        // ============================================
+        function openBox() {
+            const bet = parseFloat(document.getElementById('boxBet').value);
+            if (isNaN(bet) || bet < 50) {
+                showMessage('boxMessage', 'Minimum bet is 50 coins!', 'error');
+                return;
+            }
+            if (bet > balance) {
+                showMessage('boxMessage', 'Insufficient balance!', 'error');
+                return;
+            }
 
-    balance -= bet;
-    updateDisplay();
+            balance -= bet;
+            updateDisplay();
 
-    const box = document.getElementById('mysteryBox');
-    const reveal = document.getElementById('prizeReveal');
-    
-    box.classList.add('box-animation');
-    reveal.textContent = '?';
-    
-    setTimeout(() => {
-        box.classList.remove('box-animation');
-        
-        const rand = Math.random();
-        let multiplier;
-        let emoji;
-        
-        if (rand < 0.70) {
-            multiplier = 0.1 + Math.random() * 0.85;
-            emoji = '💔';
-        } else if (rand < 0.90) {
-            multiplier = 0.95 + Math.random() * 0.55;
-            emoji = '✨';
-        } else if (rand < 0.98) {
-            multiplier = 1.5 + Math.random() * 0.5;
-            emoji = '🎁';
-        } else {
-            multiplier = 2.0;
-            emoji = '👑';
+            const box = document.getElementById('mysteryBox');
+            const reveal = document.getElementById('prizeReveal');
+            
+            box.classList.add('box-animation');
+            reveal.textContent = '?';
+            
+            setTimeout(() => {
+                box.classList.remove('box-animation');
+                
+                const rand = Math.random();
+                let multiplier;
+                let emoji;
+                
+                if (rand < 0.4) {
+                    multiplier = 0.1 + Math.random() * 0.4;
+                    emoji = '💔';
+                } else if (rand < 0.7) {
+                    multiplier = 0.5 + Math.random() * 1.5;
+                    emoji = '✨';
+                } else if (rand < 0.9) {
+                    multiplier = 2 + Math.random() * 5;
+                    emoji = '🎁';
+                } else if (rand < 0.98) {
+                    multiplier = 10 + Math.random() * 20;
+                    emoji = '💎';
+                } else {
+                    multiplier = 50 + Math.random() * 50;
+                    emoji = '👑';
+                }
+                
+                reveal.textContent = emoji;
+                checkBox(multiplier, bet);
+            }, 1500);
+
+            saveGame();
         }
-        
-        multiplier = Math.min(multiplier, 2.0);
-        
-        reveal.textContent = emoji;
-        checkBox(multiplier, bet);
-    }, 1500);
 
-    saveGame();
-}
+        function checkBox(multiplier, bet) {
+            stats.totalGames++;
+            const winAmount = bet * multiplier;
+            balance += winAmount;
+            const profit = winAmount - bet;
+            
+            if (multiplier >= 1) {
+                stats.gamesWon++;
+                winStreak++;
+                
+                if (profit > stats.biggestWin) {
+                    stats.biggestWin = profit;
+                }
+                
+                showMessage('boxMessage', `🎁 Amazing! ${multiplier.toFixed(2)}x multiplier! Won ${profit.toFixed(2)} coins!`, 'success');
+                addToHistory('Mystery Box', bet, profit, multiplier.toFixed(2));
+            } else {
+                winStreak = 0;
+                showMessage('boxMessage', `Got ${multiplier.toFixed(2)}x. Lost ${(-profit).toFixed(2)} coins.`, 'error');
+                addToHistory('Mystery Box', bet, profit, multiplier.toFixed(2));
+            }
 
-function checkBox(multiplier, bet) {
-    stats.totalGames++;
-    const winAmount = bet * multiplier;
-    balance += winAmount;
-    const profit = winAmount - bet;
-    
-    if (multiplier >= 1) {
-        stats.gamesWon++;
-        winStreak++;
-        
-        if (profit > stats.biggestWin) {
-            stats.biggestWin = profit;
+            updateDisplay();
+            saveGame();
         }
-        
-        showMessage('boxMessage', `🎁 ${multiplier.toFixed(2)}x! Won ${profit.toFixed(2)} coins!`, 'success');
-        addToHistory('Mystery Box', bet, profit, multiplier.toFixed(2));
-    } else {
-        winStreak = 0;
-        showMessage('boxMessage', `${multiplier.toFixed(2)}x. Lost ${(-profit).toFixed(2)} coins.`, 'error');
-        addToHistory('Mystery Box', bet, profit, multiplier.toFixed(2));
-    }
-
-    updateDisplay();
-    saveGame();
-    }
         
         // ============================================
         // TOWER CLIMB GAME

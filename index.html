@@ -1081,7 +1081,6 @@ function markDailyUsed() {
         let towerActive = false;
         let towerLevel = 0;
         let towerBetAmount = 0;
-        let boxAttempts = 0;
 
         // ============================================
         // COOKIE MANAGEMENT
@@ -1645,43 +1644,22 @@ function openBox() {
     setTimeout(() => {
         box.classList.remove('box-animation');
         
-        boxAttempts++;
-        
+        const rand = Math.random();
         let multiplier;
         let emoji;
         
-        if (boxAttempts < 30) {
-            const rand = Math.random();
-            
-            if (rand < 0.85) {
-                multiplier = 0.1 + Math.random() * 0.85;
-                emoji = '💔';
-            } else if (rand < 0.95) {
-                multiplier = 0.95 + Math.random() * 0.15;
-                emoji = '✨';
-            } else {
-                multiplier = 1.1 + Math.random() * 0.4;
-                emoji = '🎁';
-            }
+        if (rand < 0.70) {
+            multiplier = 0.1 + Math.random() * 0.85;
+            emoji = '💔';
+        } else if (rand < 0.90) {
+            multiplier = 0.95 + Math.random() * 0.55;
+            emoji = '✨';
+        } else if (rand < 0.98) {
+            multiplier = 1.5 + Math.random() * 0.5;
+            emoji = '🎁';
         } else {
-            const rand = Math.random();
-            
-            if (rand < 0.50) {
-                multiplier = 0.3 + Math.random() * 0.65;
-                emoji = '💔';
-            } else if (rand < 0.75) {
-                multiplier = 0.95 + Math.random() * 0.55;
-                emoji = '✨';
-            } else if (rand < 0.92) {
-                multiplier = 1.5 + Math.random() * 0.5;
-                emoji = '🎁';
-            } else if (rand < 0.98) {
-                multiplier = 1.8 + Math.random() * 0.2;
-                emoji = '💎';
-            } else {
-                multiplier = 2.0;
-                emoji = '👑';
-            }
+            multiplier = 2.0;
+            emoji = '👑';
         }
         
         multiplier = Math.min(multiplier, 2.0);
@@ -1717,7 +1695,7 @@ function checkBox(multiplier, bet) {
 
     updateDisplay();
     saveGame();
-}
+    }
         
         // ============================================
         // TOWER CLIMB GAME

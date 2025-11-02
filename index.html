@@ -992,10 +992,7 @@ html, body {
 <!-- Mystery Box -->
 <div class="game-card">
     <h3 class="game-title">🎁 Mystery Box</h3>
-    <p class="game-description">Open a mystery box! Bet exactly 1000 coins. Max multiplier: 2x!</p>
-    <div class="bet-section">
-        <input type="number" id="boxBet" class="bet-input" placeholder="Enter 1000 coins" min="1000" max="1000" value="1000">
-    </div>
+    <p class="game-description">Open a mystery box! Cost: 1000 coins. Max multiplier: 2x!</p>
     <div class="mystery-box" id="mysteryBox">
         <div class="prize-reveal" id="prizeReveal">?</div>
     </div>
@@ -1630,15 +1627,10 @@ function endMinesGame(cashedOut) {
 let boxAttempts = 0;
 
 function openBox() {
-    const bet = parseFloat(document.getElementById('boxBet').value);
-    
-    if (isNaN(bet) || bet !== 1000) {
-        showMessage('boxMessage', 'Bet must be exactly 1000 coins!', 'error');
-        return;
-    }
+    const bet = 1000;
     
     if (bet > balance) {
-        showMessage('boxMessage', 'Insufficient balance!', 'error');
+        showMessage('boxMessage', 'Insufficient balance! Need 1000 coins!', 'error');
         return;
     }
 

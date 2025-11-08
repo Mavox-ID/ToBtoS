@@ -835,6 +835,66 @@ html, body {
 .game-controls .btn {
     flex: 1;
 }
+
+.github-section {
+    background: linear-gradient(135deg, #24292e 0%, #3c4146 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 25px 0;
+    text-align: left;
+    box-shadow: 0 10px 30px rgba(36, 41, 46, 0.3);
+    transition: all 0.3s ease;
+}
+
+.github-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(36, 41, 46, 0.5);
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    gap: 15px;
+}
+
+.github-icon {
+    width: 60px;
+    height: 60px;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.25));
+}
+
+.github-text h3 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.github-text p {
+    margin: 5px 0 0;
+    font-size: 1em;
+    opacity: 0.85;
+}
+
+@media (max-width: 600px) {
+    .github-link {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .github-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .github-text h3 {
+        font-size: 1.2em;
+    }
+
+    .github-text p {
+        font-size: 0.9em;
+    }
+}
     </style>
 </head>
 <body>
@@ -877,6 +937,15 @@ html, body {
             <h3>Our Telegram channel</h3>
             <p>News, bonuses, and 🔥 exclusive promo codes only there!</p>
         </div>
+<div class="github-section">
+    <a href="https://github.com/B-HDr/YICB/" target="_blank" class="github-link">
+        <img src="https://en.wikipedia.org/wiki/File:GitHub_Invertocat_Logo.svg" alt="GitHub" class="github-icon">
+        <div class="github-text">
+            <h3>Our GitHub Page</h3>
+            <p>Open-source. Support, report bugs, suggest new features, or request new games.</p>
+        </div>
+    </a>
+</div>
     </a>
             </div>
         </div>
